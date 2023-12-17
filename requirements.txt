@@ -1,5 +1,6 @@
 cvlib==0.2.7
 pyserial==3.5
+tensorflow==2.15.0
 opencv-python==4.8.0.74
 numpy==1.26.2
 requests==2.26.0
