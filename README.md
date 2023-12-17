@@ -1,15 +1,16 @@
 # SmartSpoon
 
-Import:
-Oak-D Camera
-OpenCV Library
-DepthAI Library
+## Requirements
+* Python Version 11 (12 isnt supported by DepthAI)
 
-Work done:
+## Install:
+pip install -r requirements.txt
+
+## Content:
 * Camera rgb picture
+* Basic Camera recognition
 
-
-Next Steps:
-* Camera depth recognition
-* Food recognition
-* Spoon tracking
+## Next Steps:
+* Object recognition for cutlery and food
+* cutlery tracking
+* adding vibration to the cuttlery through arduino

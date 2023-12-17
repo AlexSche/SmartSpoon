@@ -1,6 +1,5 @@
 import cv2 
 import depthai 
-import blobconverter
 import numpy as np
 
 pipeline = depthai.Pipeline()

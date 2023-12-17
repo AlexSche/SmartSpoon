@@ -1,6 +1,5 @@
 # import the opencv library 
 import cv2 
-import depthai 
 
 # define a video capture object 
 vid = cv2.VideoCapture(0) 
