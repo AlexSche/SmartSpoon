@@ -17,7 +17,7 @@ object_detector = cv2.createBackgroundSubtractorMOG2()
 
 # Connect to device and start pipeline
 with depthai.Device(pipeline) as device:
-    qRgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False)
+    qRgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False) # type: ignore
     while True:
         #this frame is displayed in BGR
         BGRframe = qRgb.get().getFrame()
