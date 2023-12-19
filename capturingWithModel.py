@@ -32,22 +32,22 @@ syncNN = True
 pipeline = depthai.Pipeline()
 
 
-# Define sources and outputs for cam
+# Define sources and outputs
 cam = pipeline.create(depthai.node.ColorCamera)
+detectionNetwork = pipeline.create(depthai.node.YoloDetectionNetwork)
+
+xout = pipeline.create(depthai.node.XLinkOut)
+nnOut = pipeline.create(depthai.node.XLinkOut)
+
+xout.setStreamName("rgb")
+nnOut.setStreamName("nn")
+
+# Settings
 cam.setColorOrder(depthai.ColorCameraProperties.ColorOrder.BGR)
 cam.setResolution(depthai.ColorCameraProperties.SensorResolution.THE_1080_P)
 cam.setPreviewSize(416, 416)
 cam.setInterleaved(False)
 cam.setFps(40)
-xout = pipeline.create(depthai.node.XLinkOut)
-xout.setStreamName("rgb")
-cam.preview.link(xout.input)
-
-# Define sources and outputs for nn
-detectionNetwork = pipeline.create(depthai.node.YoloDetectionNetwork)
-nnOut = pipeline.create(depthai.node.XLinkOut)
-nnOut.setStreamName("nn")
-
 # Network specific settings
 detectionNetwork.setConfidenceThreshold(0.5) # type: ignore
 detectionNetwork.setNumClasses(80) # type: ignore
@@ -65,7 +65,6 @@ if syncNN:
     detectionNetwork.passthrough.link(xout.input)
 else:
     cam.preview.link(xout.input)
-
 detectionNetwork.out.link(nnOut.input)
 
 
@@ -93,7 +92,7 @@ with depthai.Device(pipeline) as device:
         for detection in detections:
             bbox = frameNorm(frame, (detection.xmin, detection.ymin, detection.xmax, detection.ymax))
             cv2.putText(frame, labelMap[detection.label], (bbox[0] + 10, bbox[1] + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
-            cv2.putText(frame, f"{int(detection.confidence * 100)}%", (bbox[0] + 10, bbox[1] + 40), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
+            cv2.putText(frame, f"{int(detection.confidence * 10)}%", (bbox[0] + 10, bbox[1] + 40), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
             cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
         # Show the frame
         cv2.imshow(name, frame)
