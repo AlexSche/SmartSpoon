@@ -96,8 +96,8 @@ with depthai.Device(pipeline) as device:
                 cv2.putText(frame, f"{int(detection.confidence * 10)}%", (bbox[0] + 10, bbox[1] + 40), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
                 cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
                 print(labelMap[detection.label])
-            #save the positions of cutlery and donut
-        # Show the frame
+                #save the positions of cutlery and donut
+        # Show the frame 
         cv2.imshow(name, frame)
 
     while True:
