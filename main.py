@@ -17,6 +17,7 @@ object_detector = cv2.createBackgroundSubtractorMOG2()
 
 # Connect to device and start pipeline
 with depthai.Device(pipeline) as device:
+    print("test")
     qRgb = device.getOutputQueue(name="rgb", maxSize=4, blocking=False) # type: ignore
     while True:
         #this frame is displayed in BGR
@@ -25,8 +26,8 @@ with depthai.Device(pipeline) as device:
         RGBframe = cv2.cvtColor(BGRframe, cv2.COLOR_RGB2BGR)
 
         #---  cvlib common object detection
-        #bbox, label, conf = cv.detect_common_objects(RGBframe)
-        #output_image = draw_bbox(RGBframe, bbox, label, conf)
+        bbox, label, conf = cv.detect_common_objects(RGBframe)
+        output_image = draw_bbox(RGBframe, bbox, label, conf)
         # ---
 
         #Object detection

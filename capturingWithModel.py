@@ -1,3 +1,4 @@
+from cProfile import label
 from pathlib import Path
 import cv2 
 import depthai 
@@ -81,11 +82,42 @@ with depthai.Device(pipeline) as device:
     counter = 0
     color2 = (255, 255, 255)
 
+    #empty scene list
+    objects = []
+
     # nn data, being the bounding box locations, are in <0..1> range - they need to be normalized with frame width/height
     def frameNorm(frame, bbox):
         normVals = np.full(len(bbox), frame.shape[0])
         normVals[::2] = frame.shape[1]
         return (np.clip(np.array(bbox), 0, 1) * normVals).astype(int)
+  
+    def sceneUpdate(label, bbox):
+        for i in objects:
+            #assume object type is unique
+            if(i[0] == label):
+                diff = (i[1]-(bbox[0]+bbox[2])/2, i[2]-(bbox[1]+bbox[3])/2)
+                if(diff[1]*diff[1]+diff[0]*diff[0] > 20):
+                    objects.remove(i)
+                    objects.append((label,(bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2)) 
+                    #if object type is the one wanted to be tracked, evaluate vibration
+                    # 41 for cup as testing purpose, use e.g. fork for real application
+                    if(label == 41):
+                        initiateVibration((bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2,diff)
+                    #print(diff)
+                return
+        objects.append((label,(bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2))        
+
+    def initiateVibration(x,y,diff):
+        labeltoeat = 45 #replace with label of food
+        for i in objects:
+            if(i[0] == labeltoeat):
+                if((i[1]-x)*(i[1]-x)+(i[2]-y)*(i[2]-y) < (i[1]-x-diff[0])*(i[1]-x-diff[0])+(i[2]-y-diff[1])*(i[2]-y-diff[1])):
+                    #vibrate, cause objects get closer to each other
+                    print("bzzzz")#placeholder for vibrate
+            return
+        
+
+            
 
     def displayFrame(name, frame):
         color = (255, 0, 0)
@@ -95,8 +127,14 @@ with depthai.Device(pipeline) as device:
                 cv2.putText(frame, labelMap[detection.label], (bbox[0] + 10, bbox[1] + 20), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
                 cv2.putText(frame, f"{int(detection.confidence * 10)}%", (bbox[0] + 10, bbox[1] + 40), cv2.FONT_HERSHEY_TRIPLEX, 0.5, 255)
                 cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), color, 2)
-                print(labelMap[detection.label])
+                #print(labelMap[detection.label])
+                #print(detection.label)
                 #save the positions of cutlery and donut
+                if(counter % 10 == 0):      
+                    sceneUpdate(detection.label, bbox)
+                #print((bbox[0]+bbox[2])/2)
+                #print((bbox[1]+bbox[3])/2)
+                         
         # Show the frame 
         cv2.imshow(name, frame)
 
