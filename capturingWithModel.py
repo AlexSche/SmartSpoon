@@ -1,3 +1,4 @@
+import asyncio
 from cProfile import label
 from pathlib import Path
 import cv2 
@@ -7,6 +8,8 @@ import numpy as np
 import cvlib as cv
 import time
 from cvlib.object_detection import draw_bbox
+
+import vibrate
 
 # Get argument first
 nnPath = str((Path(__file__).parent / Path('yolo-v4-tiny-tf_openvino_2021.4_6shave.blob')).resolve().absolute())
@@ -101,19 +104,20 @@ with depthai.Device(pipeline) as device:
                     objects.append((label,(bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2)) 
                     #if object type is the one wanted to be tracked, evaluate vibration
                     # 41 for cup as testing purpose, use e.g. fork for real application
-                    if(label == 41):
+                    if(label == 42):
                         initiateVibration((bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2,diff)
                     #print(diff)
                 return
         objects.append((label,(bbox[0]+bbox[2])/2,(bbox[1]+bbox[3])/2))        
 
     def initiateVibration(x,y,diff):
-        labeltoeat = 45 #replace with label of food
+        labeltoeat = 41 #replace with label of food
         for i in objects:
             if(i[0] == labeltoeat):
                 if((i[1]-x)*(i[1]-x)+(i[2]-y)*(i[2]-y) < (i[1]-x-diff[0])*(i[1]-x-diff[0])+(i[2]-y-diff[1])*(i[2]-y-diff[1])):
                     #vibrate, cause objects get closer to each other
-                    print("bzzzz")#placeholder for vibrate
+                    print("bzzzz") #placeholder for vibrate
+                    value = vibrate.shortVibration() # vibrates for a short duration
             return
         
 
