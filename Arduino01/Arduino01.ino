@@ -1,5 +1,5 @@
 int vibrateInput;
-const int motor_pin = 8;
+const int motor_pin = 9;
 
 void setup() {
   // put your setup code here, to run once:
@@ -15,11 +15,11 @@ void loop() {
     if (vibrateInput == 1) {
       digitalWrite(motor_pin,1);
       delay(500);
-      //Serial.print("ON");
+      Serial.print("ON");
   } else {
       digitalWrite(motor_pin,0);
       delay(500);
-      //Serial.print("OFF");
+      Serial.print("OFF");
   }
   }
 }

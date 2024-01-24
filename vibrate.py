@@ -2,7 +2,7 @@
 import serial
 import time
 import threading
-arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
+arduino = serial.Serial(port='COM8', baudrate=115200, timeout=.1)
 
 def startVibration():
     arduino.write(bytes('1', 'utf-8'))

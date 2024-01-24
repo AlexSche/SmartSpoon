@@ -116,7 +116,6 @@ with depthai.Device(pipeline) as device:
             if(i[0] == labeltoeat):
                 if((i[1]-x)*(i[1]-x)+(i[2]-y)*(i[2]-y) < (i[1]-x-diff[0])*(i[1]-x-diff[0])+(i[2]-y-diff[1])*(i[2]-y-diff[1])):
                     #vibrate, cause objects get closer to each other
-                    print("bzzzz") #placeholder for vibrate
                     value = vibrate.shortVibration() # vibrates for a short duration
             return
         
